@@ -1,16 +1,20 @@
 export default () => ({
-  nodeEnv: process.env.NODE_ENV || 'production',
-  port: process.env.PORT || 3000,
-  databaseUrl: process.env.DATABASE_URL,
+  app: {
+    nodeEnv: process.env.NODE_ENV,
+    port: process.env.PORT,
+  },
   database: {
     url: process.env.DATABASE_URL,
-    host: process.env.DB_HOST || 'mysql',
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER || 'mysql',
-    password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_DATABASE || 'mysql',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
   },
   jwt: {
-    accessToken: process.env.CLIENT_ACCESS_TOKEN,
+    accessToken: process.env.JWT_ACCESS_TOKEN,
+    refreshToken: process.env.JWT_REFRESH_TOKEN,
+    accessTokenExpire: process.env.JWT_ACCESS_TOKEN_EXPIRE,
+    refreshTokenExpire: process.env.JWT_REFRESH_TOKEN_EXPIRE,
   },
 });

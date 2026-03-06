@@ -8,12 +8,14 @@ import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 import { LibModule } from './common/libs/lib.module';
+import { ConfigurationSchema } from './config/schema/configuration.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development'],
+      envFilePath: ['.env.development', '.env'],
+      validate: (config) => ConfigurationSchema.parse(config),
       load: [configuration],
       ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
