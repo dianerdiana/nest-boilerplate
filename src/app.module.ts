@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 
 import configuration from './config/configuration';
 import { ConfigurationSchema } from './config/schema/configuration.schema';
@@ -31,6 +31,11 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      inject: [Reflector],
+      useFactory: (reflector: Reflector) => new ClassSerializerInterceptor(reflector),
     },
   ],
 })
