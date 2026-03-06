@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { PrismaService } from './prisma.service';
-import { TokenGeneratorService } from './token-generator.service';
 import { WinstonLoggerService } from './winston-logger.service';
 import { JwtConfigService } from './jwt-config.service';
 
@@ -17,7 +16,7 @@ import { JwtConfigService } from './jwt-config.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [PrismaService, TokenGeneratorService, WinstonLoggerService],
-  exports: [PrismaService, TokenGeneratorService, WinstonLoggerService],
+  providers: [PrismaService, WinstonLoggerService],
+  exports: [PrismaService, WinstonLoggerService],
 })
 export class LibModule {}
