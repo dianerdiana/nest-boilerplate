@@ -8,14 +8,23 @@ export class UserRepository {
 
   findOne({ email, username }: { email?: string; username?: string }) {
     return this.prisma.user.findFirst({
-      select: { id: true, email: true, username: true, password: true },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        password: true,
+        firstName: true,
+        lastName: true,
+      },
       where: { OR: [{ email }, { username }] },
     });
   }
 
   create(dto: RegisterDto) {
+    const { roleId, ...restDto } = dto;
+
     return this.prisma.user.create({
-      data: { ...dto },
+      data: { ...restDto, userRoles: { create: [{ roleId: roleId }] } },
     });
   }
 }

@@ -1,5 +1,5 @@
 export type UserData = {
-  userId: bigint;
+  sub: number;
   email?: string | null;
   username: string;
 };

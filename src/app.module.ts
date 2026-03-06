@@ -3,12 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
 import configuration from './config/configuration';
+import { ConfigurationSchema } from './config/schema/configuration.schema';
 
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-
 import { LibModule } from './common/libs/lib.module';
-import { ConfigurationSchema } from './config/schema/configuration.schema';
+
+import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigurationSchema } from './config/schema/configuration.schema';
       ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
     LibModule,
+    AuthenticationModule,
   ],
   providers: [
     {

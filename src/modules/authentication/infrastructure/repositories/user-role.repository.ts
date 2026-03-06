@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class UserRoleRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findUserRole(userId: bigint) {
+  findUserRole(userId: number) {
     return this.prisma.userRole.findFirst({
       where: { userId },
       include: {

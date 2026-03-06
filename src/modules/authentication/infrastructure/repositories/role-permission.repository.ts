@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class RolePermissionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAllByRoleId(roleId: bigint) {
+  findAllByRoleId(roleId: number) {
     return this.prisma.rolePermission.findMany({
       where: { roleId },
       include: {

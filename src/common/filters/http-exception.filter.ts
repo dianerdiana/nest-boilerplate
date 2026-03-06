@@ -118,22 +118,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = normalized.message;
       errors = normalized.errors;
     } else if (exception instanceof Error) {
-      message = statusCode >= 500 ? 'Internal server error' : exception.message;
+      message = exception.message;
     }
 
-    const logPayload = {
-      statusCode,
-      method: request.method,
-      path: request.url,
-      message,
-      errors,
-      exception,
-    };
+    const logPayload = `[STATUS_CODE]: ${statusCode} - [METHOD]: ${request.method} - [PATH]: ${request.url} - [MESSAGE]: ${message} - [ERRORS]: ${errors ? JSON.stringify(errors) : '?'} - [EXCEPTIONS]: ${JSON.stringify(exception)}`;
 
     if (statusCode >= 500) {
-      this.logger.error(JSON.stringify(logPayload));
+      this.logger.error(logPayload);
     } else {
-      this.logger.warn(JSON.stringify(logPayload));
+      this.logger.warn(logPayload);
     }
 
     return response.status(statusCode).json(HttpResponse.error(message, errors));

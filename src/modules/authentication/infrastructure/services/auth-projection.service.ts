@@ -3,7 +3,13 @@ import { Permission, Role } from 'generated/prisma/client';
 
 import { UserData } from '@/common/types/user-data.type';
 
-type User = { id: bigint; email?: string | null; username: string };
+type User = {
+  id: number;
+  email?: string | null;
+  username: string;
+  firstName: string;
+  lastName?: string;
+};
 
 type UserPayload = {
   user: User;
@@ -14,9 +20,10 @@ type UserPayload = {
 @Injectable()
 export class AuthProjectionService {
   buildUserData(payload: UserPayload): {
-    id: bigint;
+    id: number;
     username: string;
     email?: string | null;
+    fullName: string;
     role: string;
     permissions: { action: string; subject: string }[];
   } {
@@ -25,10 +32,13 @@ export class AuthProjectionService {
       subject: permission.subject,
     }));
 
+    const { user } = payload;
+
     return {
-      id: payload.user.id,
-      email: payload.user.email,
-      username: payload.user.username,
+      id: user.id,
+      fullName: user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName,
+      email: user.email,
+      username: user.username,
       role: payload.role.name,
       permissions,
     };
@@ -36,7 +46,7 @@ export class AuthProjectionService {
 
   buildJwtPayload(user: User): UserData {
     return {
-      userId: user.id,
+      sub: user.id,
       email: user.email,
       username: user.username,
     };

@@ -7,10 +7,10 @@ type ZodIssueDetail = {
 };
 
 @Injectable()
-export class ZodValidationPipe implements PipeTransform {
-  constructor(private readonly schema: ZodType) {}
+export class ZodValidationPipe<TOutput = unknown> implements PipeTransform {
+  constructor(private readonly schema: ZodType<TOutput>) {}
 
-  transform(value: unknown) {
+  transform(value: unknown): TOutput {
     const parsed = this.schema.safeParse(value);
 
     if (parsed.success) {

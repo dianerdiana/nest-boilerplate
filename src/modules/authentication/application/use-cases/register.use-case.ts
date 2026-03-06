@@ -4,17 +4,21 @@ import { UserRepository } from '../../infrastructure/repositories/user.repositor
 import { PasswordService } from '../../infrastructure/services/password.service';
 
 import { RegisterDto } from '../dtos/register.dto';
+import { RoleRepository } from '../../infrastructure/repositories/role.respository';
 
 @Injectable()
 export class RegisterUseCase {
   constructor(
     private readonly userRepo: UserRepository,
+    private readonly roleRepo: RoleRepository,
+
     private readonly passwordService: PasswordService,
   ) {}
 
   async execute(dto: RegisterDto) {
     await this.validateEmail(dto.email);
     await this.validateUsername(dto.username);
+    await this.validateRole(dto.roleId);
 
     const hashPassword = await this.passwordService.hashPassword(dto.password);
 
@@ -32,6 +36,13 @@ export class RegisterUseCase {
     if (username) {
       const user = await this.userRepo.findOne({ username });
       if (user) throw new BadRequestException('Username is already exist');
+    }
+  }
+
+  async validateRole(roleId: number): Promise<void> {
+    if (roleId) {
+      const role = await this.roleRepo.findOne({ id: roleId });
+      if (!role) throw new BadRequestException();
     }
   }
 }

@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id BigInt @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   firstName String        @map("first_name") @db.VarChar(50)
   lastName  String        @map("last_name") @db.VarChar(50)
@@ -33,7 +33,7 @@ model User {
 }
 
 model Role {
-  id              BigInt           @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   name            String           @db.VarChar(100)
   description     String?          @db.VarChar(255)
   createdAt       DateTime         @default(now()) @map("created_at")
@@ -46,9 +46,9 @@ model Role {
 }
 
 model UserRole {
-  id     BigInt @id @default(autoincrement())
-  userId BigInt @map("user_id")
-  roleId BigInt @map("role_id")
+  id     Int @id @default(autoincrement())
+  userId Int @map("user_id")
+  roleId Int @map("role_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -61,7 +61,7 @@ model UserRole {
 }
 
 model Permission {
-  id              BigInt           @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   name            String           @db.VarChar(100)
   action          String           @db.VarChar(100)
   subject         String           @db.VarChar(100)
@@ -77,9 +77,9 @@ model Permission {
 }
 
 model RolePermission {
-  id           BigInt   @id @default(autoincrement())
-  roleId       BigInt   @map("role_id")
-  permissionId BigInt   @map("permission_id")
+  id           Int      @id @default(autoincrement())
+  roleId       Int      @map("role_id")
+  permissionId Int      @map("permission_id")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
