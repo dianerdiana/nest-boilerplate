@@ -1,8 +1,8 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { HttpResponse, type PaginationMeta } from '../utils/http-response';
+import { HttpResponse, type ResponseMeta } from '../utils/http-response';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -13,26 +13,31 @@ export class TransformInterceptor<T> implements NestInterceptor<T, HttpResponse<
   intercept(_context: ExecutionContext, next: CallHandler): Observable<HttpResponse<unknown>> {
     return next.handle().pipe(
       map((payload: unknown) => {
-        if (payload instanceof HttpResponse) return payload;
+        if (payload instanceof HttpResponse) {
+          return payload;
+        }
+
+        if (payload === undefined || payload === null) {
+          return HttpResponse.success();
+        }
 
         if (isPlainObject(payload)) {
-          const maybeMessage = typeof payload.message === 'string' ? payload.message : 'ok';
-          const hasData = 'data' in payload;
-          const hasMeta = 'meta' in payload;
+          const message = typeof payload.message === 'string' ? payload.message : 'ok';
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const hasData = Object.prototype.hasOwnProperty.call(payload, 'data');
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const hasMeta = Object.prototype.hasOwnProperty.call(payload, 'meta');
 
-          // Controller/service explicitly returns { data, meta?, message? }
           if (hasData || hasMeta) {
             return HttpResponse.success({
-              message: maybeMessage,
+              message,
               data: hasData ? payload.data : undefined,
-              meta: hasMeta ? (payload.meta as PaginationMeta) : undefined,
+              meta: hasMeta ? (payload.meta as ResponseMeta) : undefined,
             });
           }
         }
 
-        // Plain payload => wrap as data
         return HttpResponse.success({
-          message: 'ok',
           data: payload,
         });
       }),
