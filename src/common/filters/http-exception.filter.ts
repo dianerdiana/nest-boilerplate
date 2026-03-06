@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 
 import { HttpResponse, type ApiErrorItem } from '../utils/http-response';
 import { WinstonLoggerService } from '../libs/winston-logger.service';
@@ -16,7 +16,7 @@ function toPathString(path: unknown): string | undefined {
   return undefined;
 }
 
-function normalizeErrorsFromHttpExceptionResponse(exceptionResponse: unknown): {
+function normalizeHttpExceptionResponse(exceptionResponse: unknown): {
   message: string;
   errors?: ApiErrorItem[];
 } {
@@ -28,32 +28,34 @@ function normalizeErrorsFromHttpExceptionResponse(exceptionResponse: unknown): {
     return { message: 'Request failed' };
   }
 
-  const msg = (exceptionResponse as any).message;
-  const explicitErrors = (exceptionResponse as any).errors;
+  const message = exceptionResponse.message;
+  const errors = exceptionResponse.errors;
 
-  // If you already throw HttpException({ message, errors }), respect it.
-  if (typeof msg === 'string' && Array.isArray(explicitErrors)) {
-    return { message: msg, errors: explicitErrors as ApiErrorItem[] };
-  }
-
-  // If message is array => treat as validation details
-  if (Array.isArray(msg)) {
-    const errors = msg
-      .map((m) => (typeof m === 'string' ? ({ message: m } as ApiErrorItem) : null))
-      .filter(Boolean) as ApiErrorItem[];
-
+  // Preferred custom shape: { message: string, errors: ApiErrorItem[] }
+  if (typeof message === 'string' && Array.isArray(errors)) {
     return {
-      message: 'Validation failed',
-      errors: errors.length ? errors : undefined,
+      message,
+      errors: errors as ApiErrorItem[],
     };
   }
 
-  if (typeof msg === 'string') {
-    return { message: msg };
+  // Fallback: { message: string }
+  if (typeof message === 'string') {
+    return { message };
   }
 
-  if (typeof (exceptionResponse as any).error === 'string') {
-    return { message: (exceptionResponse as any).error };
+  // Fallback: { message: string[] }
+  if (Array.isArray(message)) {
+    return {
+      message: 'Validation failed',
+      errors: message
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => ({ message: item })),
+    };
+  }
+
+  if (typeof exceptionResponse.error === 'string') {
+    return { message: exceptionResponse.error };
   }
 
   return { message: 'Request failed' };
@@ -62,11 +64,11 @@ function normalizeErrorsFromHttpExceptionResponse(exceptionResponse: unknown): {
 function normalizeZodLikeError(
   exception: unknown,
 ): { message: string; errors: ApiErrorItem[] } | null {
-  if (!isPlainObject(exception)) return null;
-  const issues = (exception as any).issues;
-  if (!Array.isArray(issues)) return null;
+  if (!isPlainObject(exception) || !Array.isArray(exception.issues)) {
+    return null;
+  }
 
-  const errors: ApiErrorItem[] = issues.map((issue: any) => ({
+  const errors: ApiErrorItem[] = exception.issues.map((issue: any) => ({
     path: toPathString(issue?.path),
     message: typeof issue?.message === 'string' ? issue.message : 'Invalid value',
     code: typeof issue?.code === 'string' ? issue.code : undefined,
@@ -83,23 +85,38 @@ function normalizePrismaLikeError(
 ): { message: string; errors?: ApiErrorItem[] } | null {
   if (!isPlainObject(exception)) return null;
 
-  const code = (exception as any).code;
+  const code = exception.code;
   if (typeof code !== 'string' || !code.startsWith('P')) return null;
 
-  const base: ApiErrorItem = {
-    message: (exception as any).message ? String((exception as any).message) : 'Database error',
-    code,
-  };
+  const target = isPlainObject(exception.meta) ? exception.meta.target : undefined;
 
-  const target = (exception as any).meta?.target;
-  if (Array.isArray(target)) base.path = target.map(String).join('.');
-  else if (typeof target === 'string') base.path = target;
+  let path: string | undefined;
+  if (Array.isArray(target)) path = target.map(String).join('.');
+  else if (typeof target === 'string') path = target;
 
   if (code === 'P2002') {
-    return { message: 'Duplicate value', errors: [{ ...base, message: 'Value already exists' }] };
+    return {
+      message: 'Duplicate value',
+      errors: [
+        {
+          path,
+          message: 'Value already exists',
+          code,
+        },
+      ],
+    };
   }
 
-  return { message: 'Database error', errors: [base] };
+  return {
+    message: 'Database error',
+    errors: [
+      {
+        path,
+        message: typeof exception.message === 'string' ? exception.message : 'Database error',
+        code,
+      },
+    ],
+  };
 }
 
 @Catch()
@@ -117,25 +134,24 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let message = statusCode >= 500 ? 'Internal server error' : 'Request failed';
     let errors: ApiErrorItem[] | undefined;
 
-    const zodNorm = normalizeZodLikeError(exception);
-    if (zodNorm) {
-      message = zodNorm.message;
-      errors = zodNorm.errors;
+    const zodError = normalizeZodLikeError(exception);
+    if (zodError) {
+      message = zodError.message;
+      errors = zodError.errors;
     } else {
-      const prismaNorm = normalizePrismaLikeError(exception);
-      if (prismaNorm) {
-        message = prismaNorm.message;
-        errors = prismaNorm.errors;
+      const prismaError = normalizePrismaLikeError(exception);
+      if (prismaError) {
+        message = prismaError.message;
+        errors = prismaError.errors;
       } else if (exception instanceof HttpException) {
-        const norm = normalizeErrorsFromHttpExceptionResponse(exception.getResponse());
-        message = norm.message;
-        errors = norm.errors;
+        const normalized = normalizeHttpExceptionResponse(exception.getResponse());
+        message = normalized.message;
+        errors = normalized.errors;
       } else if (exception instanceof Error) {
-        message = statusCode >= 500 ? 'Internal server error' : exception.message || message;
+        message = statusCode >= 500 ? 'Internal server error' : exception.message;
       }
     }
 
-    // Logging detail for server-side diagnostics
     const logPayload = {
       statusCode,
       method: request.method,
