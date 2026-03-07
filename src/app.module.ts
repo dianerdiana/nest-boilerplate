@@ -9,7 +9,8 @@ import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { LibModule } from './common/libs/lib.module';
 
-import { AuthenticationModule } from './modules/authentication/authentication.module';
+import { CaslModule } from './modules/@casl/casl.module';
+import { AuthenticationModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
     }),
     LibModule,
     AuthenticationModule,
+    CaslModule,
   ],
   providers: [
     {

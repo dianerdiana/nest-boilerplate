@@ -11,7 +11,7 @@ import { UserRoleRepository } from './infrastructure/repositories/user-role.repo
 import { RolePermissionRepository } from './infrastructure/repositories/role-permission.repository';
 import { RoleRepository } from './infrastructure/repositories/role.respository';
 
-import { AuthenticationController } from './interface/controllers/authentication.controller';
+import { AuthenticationController } from './interface/controllers/auth.controller';
 
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
