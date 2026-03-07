@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { APP_GUARD } from '@nestjs/core';
 
 import { AuthProjectionService } from './infrastructure/services/auth-projection.service';
 import { PasswordService } from './infrastructure/services/password.service';
@@ -11,10 +13,16 @@ import { RoleRepository } from './infrastructure/repositories/role.respository';
 
 import { AuthenticationController } from './interface/controllers/authentication.controller';
 
+import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
+import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
+
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { RegisterUseCase } from './application/use-cases/register.use-case';
+import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
 
 @Module({
+  imports: [PassportModule],
   controllers: [AuthenticationController],
   providers: [
     AuthProjectionService,
@@ -26,8 +34,17 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
     RolePermissionRepository,
     RoleRepository,
 
+    JwtStrategy,
+    JwtRefreshStrategy,
+
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+
     LoginUseCase,
     RegisterUseCase,
+    RefreshTokenUseCase,
   ],
 })
 export class AuthenticationModule {}
