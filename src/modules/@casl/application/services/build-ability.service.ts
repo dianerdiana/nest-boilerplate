@@ -4,19 +4,20 @@ import {
   AppAbility,
   CaslAbilityFactory,
 } from '../../infrastructure/factories/casl-ability.factory';
-import { UserRepository } from '../../infrastructure/repositories/user.repository';
 
 import { UserData } from '@/common/types/user-data.type';
+
+import { UserQueryService } from '@/modules/user/application/services/user-query.service';
 
 @Injectable()
 export class BuildAbilityService {
   constructor(
     private caslAbilityFactory: CaslAbilityFactory,
-    private userRepo: UserRepository,
+    private userQueryService: UserQueryService,
   ) {}
 
   async execute(userData: UserData): Promise<AppAbility | null> {
-    const user = await this.userRepo.findOneWithPermissions(userData.sub);
+    const user = await this.userQueryService.findUserAbility(userData.sub);
 
     if (!user) return null;
 

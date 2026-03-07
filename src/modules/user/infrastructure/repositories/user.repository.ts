@@ -5,9 +5,19 @@ import { Injectable } from '@nestjs/common';
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findOneWithPermissions(id: number) {
+  findOne({ id, username, email }: { id?: number; username?: string; email?: string }) {
+    if (!id && !username && !email) return null;
+
+    return this.prisma.user.findFirst({
+      where: {
+        OR: [{ id }, { username }, { email }],
+      },
+    });
+  }
+
+  findUserAbility(userId: number) {
     return this.prisma.user.findUnique({
-      where: { id },
+      where: { id: userId },
       include: {
         userRoles: {
           include: {
