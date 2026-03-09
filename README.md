@@ -17,5 +17,5 @@ npm install --save @nestjs/config @nestjs/jwt @prisma/client @prisma/adapter-mar
 - Dev Dependencies Packages:
 
 ```bash
-npm install --save-dev prisma @types/bcrypt @types/cookie-parser @types/passport-jwt
+npm install --save-dev prisma @types/bcrypt @types/cookie-parser @types/passport-jwt tsx
 ```

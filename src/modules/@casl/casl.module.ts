@@ -5,10 +5,10 @@ import { PoliciesGuard } from './infrastructure/guards/policies.guard';
 
 import { BuildAbilityService } from './application/services/build-ability.service';
 
-import { UserModule } from '../user/user.module';
+import { UserRoleModule } from '../user-role/user-role.module';
 
 @Module({
-  imports: [UserModule],
+  imports: [UserRoleModule],
   providers: [CaslAbilityFactory, BuildAbilityService, PoliciesGuard],
   exports: [BuildAbilityService, PoliciesGuard],
 })

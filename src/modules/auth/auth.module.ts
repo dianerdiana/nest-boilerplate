@@ -6,33 +6,27 @@ import { AuthProjectionService } from './infrastructure/services/auth-projection
 import { PasswordService } from './infrastructure/services/password.service';
 import { TokenGeneratorService } from './infrastructure/services/token-generator.service';
 
-import { UserRepository } from './infrastructure/repositories/user.repository';
-import { UserRoleRepository } from './infrastructure/repositories/user-role.repository';
-import { RolePermissionRepository } from './infrastructure/repositories/role-permission.repository';
-import { RoleRepository } from './infrastructure/repositories/role.respository';
-
 import { AuthenticationController } from './interface/controllers/auth.controller';
 
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
 import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
 
+import { UserModule } from '../user/user.module';
+import { RoleModule } from '../role/role.module';
+import { UserRoleModule } from '../user-role/user-role.module';
+
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
 
 @Module({
-  imports: [PassportModule],
+  imports: [PassportModule, UserModule, UserRoleModule, RoleModule],
   controllers: [AuthenticationController],
   providers: [
     AuthProjectionService,
     PasswordService,
     TokenGeneratorService,
-
-    UserRepository,
-    UserRoleRepository,
-    RolePermissionRepository,
-    RoleRepository,
 
     JwtStrategy,
     JwtRefreshStrategy,
@@ -47,4 +41,4 @@ import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-c
     RefreshTokenUseCase,
   ],
 })
-export class AuthenticationModule {}
+export class AuthModule {}

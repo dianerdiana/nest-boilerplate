@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { UserRepository } from '../../infrastructure/repositories/user.repository';
+import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
+
 import { TokenGeneratorService } from '../../infrastructure/services/token-generator.service';
 import { AuthProjectionService } from '../../infrastructure/services/auth-projection.service';
 

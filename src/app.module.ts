@@ -10,7 +10,9 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { LibModule } from './common/libs/lib.module';
 
 import { CaslModule } from './modules/@casl/casl.module';
-import { AuthenticationModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { UserRoleModule } from './modules/user-role/user-role.module';
 
 @Module({
   imports: [
@@ -22,8 +24,10 @@ import { AuthenticationModule } from './modules/auth/auth.module';
       ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
     LibModule,
-    AuthenticationModule,
+    AuthModule,
     CaslModule,
+    UserModule,
+    UserRoleModule,
   ],
   providers: [
     {

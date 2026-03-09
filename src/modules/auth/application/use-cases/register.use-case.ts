@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { UserRepository } from '../../infrastructure/repositories/user.repository';
+import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
+import { RoleRepository } from '@/modules/role/infrastructure/repositories/role.repository';
+
 import { PasswordService } from '../../infrastructure/services/password.service';
 
 import { RegisterDto } from '../dtos/register.dto';
-import { RoleRepository } from '../../infrastructure/repositories/role.respository';
 
 @Injectable()
 export class RegisterUseCase {
@@ -41,7 +42,7 @@ export class RegisterUseCase {
 
   async validateRole(roleId: number): Promise<void> {
     if (roleId) {
-      const role = await this.roleRepo.findOne({ id: roleId });
+      const role = await this.roleRepo.findUnique(roleId);
       if (!role) throw new BadRequestException();
     }
   }

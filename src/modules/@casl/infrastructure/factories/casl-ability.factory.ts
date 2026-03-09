@@ -1,8 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AbilityBuilder, createMongoAbility, MongoAbility, MongoQuery } from '@casl/ability';
 
+import { Permission } from 'generated/prisma/client';
+
 import { Action, Subject } from '@/common/enums/access-control.enum';
-import { Permission, User } from 'generated/prisma/client';
+import { UserData } from '@/common/types/user-data.type';
 
 export type Subjects = Subject | 'all';
 export type AppConditions = MongoQuery<Record<string, any>>;
@@ -12,7 +14,7 @@ export type AppAbility = MongoAbility<[Action, Subjects], AppConditions>;
 export class CaslAbilityFactory {
   private readonly logger = new Logger(CaslAbilityFactory.name);
 
-  createForUser(user: User, permissions: Permission[], clientId: number): AppAbility {
+  createForUser(user: UserData, permissions: Permission[], clientId: number): AppAbility {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     for (const permission of permissions) {
@@ -41,19 +43,19 @@ export class CaslAbilityFactory {
 
   private parseConditions(
     raw: string | null | undefined,
-    user: User,
+    user: UserData,
     clientId: number,
   ): AppConditions | undefined {
     if (!raw?.trim()) return undefined;
 
     try {
       const populated = raw
-        .replace(/\$current_user_id/g, user.id.toString())
+        .replace(/\$current_user_id/g, user.sub.toString())
         .replace(/\$current_client_id/g, clientId.toString());
 
       return JSON.parse(populated) as AppConditions;
     } catch {
-      this.logger.error(`Invalid JSON conditions for user ${user.id}: ${raw}`);
+      this.logger.error(`Invalid JSON conditions for user ${user.sub}: ${raw}`);
       return { _unreachable_: { $eq: true } };
     }
   }

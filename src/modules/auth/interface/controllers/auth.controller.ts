@@ -37,6 +37,7 @@ export class AuthenticationController {
   ) {}
 
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post('login')
   async login(
     @ZodBody(LoginSchema) body: LoginDto,
