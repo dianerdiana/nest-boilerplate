@@ -8,7 +8,7 @@ import { ConfigurationSchema } from './config/schema/configuration.schema';
 
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { LibModule } from './common/libs/lib.module';
+import { CommonModule } from './common/common.module';
 
 import { CaslModule } from './modules/@casl/casl.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -43,7 +43,7 @@ import { UserRoleModule } from './modules/user-role/user-role.module';
         },
       ],
     }),
-    LibModule,
+    CommonModule,
     AuthModule,
     CaslModule,
     UserModule,

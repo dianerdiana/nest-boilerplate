@@ -1,20 +1,11 @@
 import { RESPONSE_STATUS } from '../constants/response-status.constant';
+import { ResponseMeta } from '../types/response-meta.type';
 
 export type ApiStatus = (typeof RESPONSE_STATUS)[keyof typeof RESPONSE_STATUS];
 
 export type ApiErrorItem = {
   path?: string;
   message: string;
-};
-
-export type ResponseMeta = {
-  page?: number;
-  limit?: number;
-  totalItems?: number;
-  totalPages?: number;
-  search?: string;
-  column?: string;
-  sort?: string;
 };
 
 export class HttpResponse<TData = unknown> {
