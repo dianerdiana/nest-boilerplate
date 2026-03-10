@@ -7,7 +7,6 @@ import type {
   PaginationQueryOptions,
   PaginationQueryResult,
 } from '../types/pagination.type';
-import { HttpResponse } from '../utils/http-response';
 
 @Injectable()
 export class PaginationService {
@@ -78,26 +77,24 @@ export class PaginationService {
     data: T[];
     dto: PaginationDto;
     totalItems: number;
-    totalPages: number;
     page: number;
     limit: number;
     column: string;
     sort: 'asc' | 'desc';
-  }): HttpResponse<T[]> {
-    const { data, totalItems, totalPages, dto, page, limit, column, sort } = params;
+  }): { data: T[]; meta: ResponseMeta } {
+    const { data, totalItems, dto, page, limit, column, sort } = params;
 
-    return HttpResponse.success({
+    return {
       data,
       meta: this.buildMeta({
         dto,
         page,
         limit,
         totalItems,
-        totalPages,
         column,
         sort,
       }),
-    });
+    };
   }
 
   private normalizePage(page?: number): number {

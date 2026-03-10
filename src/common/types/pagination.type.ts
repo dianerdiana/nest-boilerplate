@@ -28,7 +28,6 @@ export type BuildMetaParams = {
   page: number;
   limit: number;
   totalItems: number;
-  totalPages: number;
   column: string;
   sort: 'asc' | 'desc';
 };
