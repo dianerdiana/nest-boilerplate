@@ -108,6 +108,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     let message = statusCode >= 500 ? 'Internal server error' : 'Request failed';
     let errors: ApiErrorItem[] | undefined;
+    let trace: string | undefined;
 
     const prismaError = normalizePrismaLikeError(exception);
     if (prismaError) {
@@ -119,12 +120,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       errors = normalized.errors;
     } else if (exception instanceof Error) {
       message = exception.message;
+      trace = exception.stack;
     }
 
     const logPayload = `[STATUS_CODE]: ${statusCode} - [METHOD]: ${request.method} - [PATH]: ${request.url} - [MESSAGE]: ${message} - [ERRORS]: ${errors ? JSON.stringify(errors) : '?'} - [EXCEPTIONS]: ${JSON.stringify(exception)}`;
 
     if (statusCode >= 500) {
-      this.logger.error(logPayload);
+      this.logger.error(logPayload, trace);
     } else {
       this.logger.warn(logPayload);
     }
