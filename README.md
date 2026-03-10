@@ -19,7 +19,7 @@ cd <project-name>
 - Dependencies Packages:
 
 ```bash
-npm install --save @nestjs/config @nestjs/jwt @prisma/client @prisma/adapter-mariadb winston zod bcrypt cookie-parser class-transformer @nestjs/passport passport-jwt @casl/ability
+npm install --save @nestjs/config @nestjs/jwt @prisma/client @prisma/adapter-mariadb winston zod bcrypt cookie-parser class-transformer @nestjs/passport passport-jwt @casl/ability @nestjs/throttler
 ```
 
 - Dev Dependencies Packages:
