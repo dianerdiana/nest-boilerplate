@@ -9,6 +9,8 @@ export type PaginationQueryOptions = {
   defaultSortOrder?: 'asc' | 'desc';
   maxLimit?: number;
   searchMode?: SearchMode;
+  filterableColumns?: string[];
+  filters?: { field: string; value: string | number }[];
 };
 
 export type PaginationQueryResult = {

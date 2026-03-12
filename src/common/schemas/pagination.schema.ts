@@ -10,4 +10,13 @@ export const paginationSchema = z.object({
     .transform((value) => (value ? value : undefined)),
   column: z.string().trim().min(1).optional().default('createdAt'),
   sort: z.enum(['asc', 'desc']).optional().default('desc'),
+  filters: z
+    .array(
+      z.object({
+        field: z.string(),
+        value: z.union([z.string(), z.number()]),
+      }),
+    )
+    .optional()
+    .transform((value) => (value ? value : undefined)),
 });

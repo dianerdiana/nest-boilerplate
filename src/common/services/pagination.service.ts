@@ -17,6 +17,7 @@ export class PaginationService {
       defaultSortOrder = 'desc',
       maxLimit = 100,
       searchMode = 'insensitive',
+      filterableColumns = [],
     } = options;
 
     const page = this.normalizePage(dto.page);
@@ -33,14 +34,25 @@ export class PaginationService {
     const skip = (page - 1) * limit;
     const take = limit;
 
-    const where =
+    const searchColumn =
       search && searchableColumns.length > 0
-        ? {
-            OR: searchableColumns.map((field) => ({
-              [field]: this.buildSearchFilter(search, searchMode),
-            })),
-          }
-        : undefined;
+        ? searchableColumns.map((field) => ({
+            [field]: this.buildSearchFilter(search, searchMode),
+          }))
+        : [];
+
+    const filterColumn =
+      dto.filters?.reduce((acc: Record<string, string | number>[], { field, value }) => {
+        if (filterableColumns.includes(field)) {
+          acc.push({ [field]: value });
+        }
+        return acc;
+      }, []) ?? [];
+
+    let where = {};
+
+    if (searchColumn.length > 0) where = { ...where, OR: searchColumn };
+    if (filterColumn.length > 0) where = { ...where, AND: filterColumn };
 
     const orderBy = {
       [column]: sort,
