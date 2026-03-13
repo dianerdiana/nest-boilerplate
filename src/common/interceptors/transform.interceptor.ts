@@ -2,7 +2,8 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { HttpResponse, type ResponseMeta } from '../utils/http-response';
+import { HttpResponse } from '../utils/http-response';
+import { ResponseMeta } from '../types/response-meta.type';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
