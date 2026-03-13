@@ -1,15 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Permission, Role } from 'generated/prisma/client';
+import { Permission, Role, User } from '@/generated/prisma/client';
 
 import { UserData } from '@/common/types/user-data.type';
-
-type User = {
-  id: number;
-  email?: string | null;
-  username: string;
-  firstName: string;
-  lastName?: string;
-};
 
 type UserPayload = {
   user: User;

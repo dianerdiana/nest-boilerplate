@@ -1,14 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AbilityBuilder, createMongoAbility, MongoAbility, MongoQuery } from '@casl/ability';
+import {
+  AbilityBuilder,
+  createMongoAbility,
+  ForcedSubject,
+  MongoAbility,
+  MongoQuery,
+} from '@casl/ability';
 
-import { Permission } from 'generated/prisma/client';
+import { Permission } from '@/generated/prisma/client';
 
-import { Action, Subject } from '@/common/enums/access-control.enum';
 import { UserData } from '@/common/types/user-data.type';
+import { Action, ACTIONS, Resource, RESOURCES } from '@/common/types/access-control.type';
 
-export type Subjects = Subject | 'all';
+export type AppSubject = Resource | ForcedSubject<Exclude<Resource, 'all'>>;
+
 export type AppConditions = MongoQuery<Record<string, any>>;
-export type AppAbility = MongoAbility<[Action, Subjects], AppConditions>;
+export type AppAbility = MongoAbility<[Action, AppSubject], AppConditions>;
 
 @Injectable()
 export class CaslAbilityFactory {
@@ -18,7 +25,7 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     for (const permission of permissions) {
-      if (!this.isValidAction(permission.action) || !this.isValidSubject(permission.subject)) {
+      if (!this.isValidAction(permission.action) || !this.isValidResource(permission.subject)) {
         this.logger.warn(
           `Skipping invalid permission. action=${permission.action}, subject=${permission.subject}`,
         );
@@ -26,10 +33,6 @@ export class CaslAbilityFactory {
       }
 
       const conditions = this.parseConditions(permission.conditions, user, clientId);
-
-      if (permission.conditions && !conditions) {
-        continue;
-      }
 
       if (permission.inverted) {
         cannot(permission.action, permission.subject, conditions);
@@ -61,10 +64,10 @@ export class CaslAbilityFactory {
   }
 
   private isValidAction(action: string): action is Action {
-    return Object.values(Action).includes(action as Action);
+    return ACTIONS.includes(action as Action);
   }
 
-  private isValidSubject(subject: string): subject is Subject {
-    return Object.values(Subject).includes(subject as Subject);
+  private isValidResource(resource: string): resource is Resource {
+    return RESOURCES.includes(resource as Resource);
   }
 }
