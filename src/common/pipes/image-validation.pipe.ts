@@ -1,8 +1,8 @@
 import {
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
   BadRequestException,
+  FileTypeValidator,
+  MaxFileSizeValidator,
+  ParseFilePipe,
 } from '@nestjs/common';
 
 import { IMAGE_UPLOAD_CONFIG } from '../constants/image-upload-config.constant';

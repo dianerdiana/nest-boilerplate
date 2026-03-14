@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+
 import {
   AbilityBuilder,
   createMongoAbility,
@@ -9,8 +10,8 @@ import {
 
 import { Permission } from '@/generated/prisma/client';
 
-import { UserData } from '@/common/types/user-data.type';
 import { Action, ACTIONS, Resource, RESOURCES } from '@/common/types/access-control.type';
+import { UserData } from '@/common/types/user-data.type';
 
 export type AppSubject = Resource | ForcedSubject<Exclude<Resource, 'all'>>;
 

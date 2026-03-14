@@ -2,10 +2,9 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
+import { JwtConfigService } from './libs/jwt-config.service';
 import { PrismaService } from './libs/prisma.service';
 import { WinstonLoggerService } from './libs/winston-logger.service';
-import { JwtConfigService } from './libs/jwt-config.service';
-
 import { PaginationService } from './services/pagination.service';
 
 @Global()

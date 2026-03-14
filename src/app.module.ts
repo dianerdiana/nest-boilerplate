@@ -3,12 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import configuration from './config/configuration';
-import { ConfigurationSchema } from './config/schema/configuration.schema';
-
+import { CommonModule } from './common/common.module';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { CommonModule } from './common/common.module';
+
+import configuration from './config/configuration';
+import { ConfigurationSchema } from './config/schema/configuration.schema';
 
 import { CaslModule } from './modules/@casl/casl.module';
 import { AuthModule } from './modules/auth/auth.module';

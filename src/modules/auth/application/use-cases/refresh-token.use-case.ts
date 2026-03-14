@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
+import { UserData } from '@/common/types/user-data.type';
+
 import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
 
-import { TokenGeneratorService } from '../../infrastructure/services/token-generator.service';
 import { AuthProjectionService } from '../../infrastructure/services/auth-projection.service';
-
-import { UserData } from '@/common/types/user-data.type';
+import { TokenGeneratorService } from '../../infrastructure/services/token-generator.service';
 
 @Injectable()
 export class RefreshTokenUseCase {

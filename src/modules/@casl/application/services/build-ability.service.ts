@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+import { UserData } from '@/common/types/user-data.type';
+
+import { UserRoleRepository } from '@/modules/user-role/infrastructure/repositories/user-role.repository';
+
 import {
   AppAbility,
   CaslAbilityFactory,
 } from '../../infrastructure/factories/casl-ability.factory';
-
-import { UserData } from '@/common/types/user-data.type';
-
-import { UserRoleRepository } from '@/modules/user-role/infrastructure/repositories/user-role.repository';
 
 @Injectable()
 export class BuildAbilityService {

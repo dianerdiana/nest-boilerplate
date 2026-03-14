@@ -1,10 +1,10 @@
-import { UnauthorizedException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { UserRoleRepository } from '@/modules/user-role/infrastructure/repositories/user-role.repository';
 import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
+import { UserRoleRepository } from '@/modules/user-role/infrastructure/repositories/user-role.repository';
 
-import { PasswordService } from '../../infrastructure/services/password.service';
 import { AuthProjectionService } from '../../infrastructure/services/auth-projection.service';
+import { PasswordService } from '../../infrastructure/services/password.service';
 import { TokenGeneratorService } from '../../infrastructure/services/token-generator.service';
 
 import { LoginDto } from '../dtos/login.dto';

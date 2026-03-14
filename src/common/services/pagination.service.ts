@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import type { PaginationDto } from '../dtos/pagination.dto';
-import type { ResponseMeta } from '../types/response-meta.type';
 import type {
   BuildMetaParams,
   PaginationQueryOptions,
   PaginationQueryResult,
 } from '../types/pagination.type';
+import type { ResponseMeta } from '../types/response-meta.type';
 
 @Injectable()
 export class PaginationService {

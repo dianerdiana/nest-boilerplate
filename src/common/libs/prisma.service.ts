@@ -1,8 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
-import { PrismaClient, Prisma } from '../../../generated/prisma/client';
+import { Prisma, PrismaClient } from '../../../generated/prisma/client';
+
 import { WinstonLoggerService } from './winston-logger.service';
 
 const clientOptions = {

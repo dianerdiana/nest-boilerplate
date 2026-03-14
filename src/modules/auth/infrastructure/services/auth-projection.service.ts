@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { Permission, Role, User } from '@/generated/prisma/client';
 
 import { UserData } from '@/common/types/user-data.type';

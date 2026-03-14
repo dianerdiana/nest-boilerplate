@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
 import { RoleRepository } from '@/modules/role/infrastructure/repositories/role.repository';
+import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
 
 import { PasswordService } from '../../infrastructure/services/password.service';
 

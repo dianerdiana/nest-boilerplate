@@ -1,4 +1,3 @@
-import { Reflector } from '@nestjs/core';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,9 +5,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+
+import { CHECK_POLICIES_KEY } from '@/common/constants/access-control.constant';
 
 import { BuildAbilityService } from '@/modules/@casl/application/services/build-ability.service';
-import { CHECK_POLICIES_KEY } from '@/common/constants/access-control.constant';
 
 import { PolicyHandler } from '../decorator/check-policies.decorator';
 import { RequestWithUser } from '../types/request-with-user.type';

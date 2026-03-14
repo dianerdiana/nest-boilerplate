@@ -1,8 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { Request } from 'express';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { CONFIGURATION } from '@/common/constants/configuration.constant';
 import { UserData } from '@/common/types/user-data.type';
@@ -16,9 +17,7 @@ export type RefreshRequestUser = RefreshTokenPayload & {
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(configService: ConfigService) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       jwtFromRequest: ExtractJwt.fromExtractors([
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         (request: Request) => request?.cookies?.refreshToken ?? null,

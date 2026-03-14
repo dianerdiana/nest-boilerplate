@@ -25,7 +25,7 @@ npm install --save @nestjs/config @nestjs/jwt @prisma/client @prisma/adapter-mar
 - Dev Dependencies Packages:
 
 ```bash
-npm install --save-dev prisma @types/bcrypt @types/cookie-parser @types/passport-jwt tsx
+npm install --save-dev prisma @types/bcrypt @types/cookie-parser @types/passport-jwt tsx eslint-plugin-simple-import-sort eslint-import-resolver-typescript
 ```
 
 # NestJS Auth Boilerplate

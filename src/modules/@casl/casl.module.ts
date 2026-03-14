@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { CaslAbilityFactory } from './infrastructure/factories/casl-ability.factory';
-import { PoliciesGuard } from './infrastructure/guards/policies.guard';
+import { UserRoleModule } from '../user-role/user-role.module';
 
 import { BuildAbilityService } from './application/services/build-ability.service';
-
-import { UserRoleModule } from '../user-role/user-role.module';
+import { CaslAbilityFactory } from './infrastructure/factories/casl-ability.factory';
+import { PoliciesGuard } from './infrastructure/guards/policies.guard';
 
 @Module({
   imports: [UserRoleModule],
