@@ -1,4 +1,4 @@
-export class UserFirstName {
+export class UserFullName {
   private readonly _value: string;
 
   constructor(value: string) {
@@ -30,7 +30,7 @@ export class UserFirstName {
     return this._value;
   }
 
-  equals(other: UserFirstName): boolean {
+  equals(other: UserFullName): boolean {
     return this._value === other._value;
   }
 
@@ -38,7 +38,7 @@ export class UserFirstName {
     return this._value;
   }
 
-  static create(value: string): UserFirstName {
-    return new UserFirstName(value);
+  static create(value: string): UserFullName {
+    return new UserFullName(value);
   }
 }
