@@ -1,11 +1,20 @@
+import {
+  Email,
+  UserFullName,
+  UserId,
+  UserPassword,
+  UserStatus,
+  UserStatusEnum,
+  UserUsername,
+} from '../value-objects';
+
 export interface UserProps {
-  id: number;
-  firstName: string;
-  lastName?: string;
-  userName: string;
-  email: string;
-  password: string;
-  status: string;
+  id?: UserId;
+  fullName: UserFullName;
+  username: UserUsername;
+  email: Email;
+  password: UserPassword;
+  status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -13,5 +22,119 @@ export interface UserProps {
 export class User {
   constructor(private readonly props: UserProps) {}
 
-  get id();
+  get id(): number | undefined {
+    return this.props.id?.value;
+  }
+
+  get fullName(): string {
+    return this.props.fullName.value;
+  }
+
+  get username(): string {
+    return this.props.username.value;
+  }
+
+  get password(): string {
+    return this.props.password.value;
+  }
+
+  get status(): UserStatus {
+    return this.props.status;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
+
+  updateFullName(value: UserFullName): void {
+    this.props.fullName = value;
+    this.props.updatedAt = new Date();
+  }
+
+  updateUsername(value: UserUsername): void {
+    this.props.username = value;
+    this.props.updatedAt = new Date();
+  }
+
+  updateStatus(value: UserStatus): void {
+    this.props.status = value;
+    this.props.updatedAt = new Date();
+  }
+
+  equals(other: User): boolean {
+    if (!this.props.id || !other.props.id) return false;
+    return this.props.id.equals(other.props.id);
+  }
+
+  // Factory Method
+  static create(props: {
+    fullName: string;
+    lastName?: string;
+    username: string;
+    email: string;
+    password: string;
+    status?: UserStatusEnum;
+  }): User {
+    const now = new Date();
+
+    return new User({
+      fullName: UserFullName.create(props.fullName),
+      username: UserUsername.create(props.username),
+      email: Email.create(props.email),
+      password: UserPassword.create(props.password),
+      status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+
+  static reconstitute(props: {
+    id: number;
+    fullName: string;
+    lastName?: string;
+    username: string;
+    email: string;
+    password: string;
+    status?: UserStatusEnum;
+    createdAt: Date;
+    updatedAt: Date;
+  }): User {
+    return new User({
+      id: UserId.from(props.id),
+      fullName: UserFullName.create(props.fullName),
+      username: UserUsername.create(props.username),
+      email: Email.create(props.email),
+      password: UserPassword.create(props.password),
+      status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    });
+  }
+
+  // For persistence
+  toPersistence(): {
+    id?: number;
+    fullName: string;
+    username: string;
+    email: string;
+    password: string;
+    status: UserStatusEnum;
+    createdAt: Date;
+    updatedAt: Date;
+  } {
+    return {
+      ...(this.props.id && { id: this.props.id.value }),
+      fullName: this.props.fullName.value,
+      username: this.props.username.value,
+      email: this.props.email.value,
+      password: this.props.password.value,
+      status: this.props.status.value,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.updatedAt,
+    };
+  }
 }
