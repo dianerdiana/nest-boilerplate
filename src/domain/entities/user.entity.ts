@@ -4,6 +4,8 @@ import {
   Password,
   UserId,
   Username,
+  UserRole,
+  UserRoleEnum,
   UserStatus,
   UserStatusEnum,
 } from '../value-objects';
@@ -14,6 +16,7 @@ export interface UserProps {
   username: Username;
   email: Email;
   password: Password;
+  role: UserRole;
   status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +63,11 @@ export class User {
     this.props.updatedAt = new Date();
   }
 
+  updateRole(value: UserRole): void {
+    this.props.role = value;
+    this.props.updatedAt = new Date();
+  }
+
   updateStatus(value: UserStatus): void {
     this.props.status = value;
     this.props.updatedAt = new Date();
@@ -70,6 +78,26 @@ export class User {
     return this.props.id.equals(other.props.id);
   }
 
+  isSuperAdmin(): boolean {
+    return this.props.role.isSuperAdmin();
+  }
+
+  isAdmin(): boolean {
+    return this.props.role.isAdmin();
+  }
+
+  isClientAdmin(): boolean {
+    return this.props.role.isClientAdmin();
+  }
+
+  isClientStaff(): boolean {
+    return this.props.role.isClientStaff();
+  }
+
+  canManageUser(): boolean {
+    return this.isSuperAdmin();
+  }
+
   // Factory Method
   static create(props: {
     fullName: string;
@@ -77,6 +105,7 @@ export class User {
     username: string;
     email: string;
     password: string;
+    role: UserRoleEnum;
     status?: UserStatusEnum;
   }): User {
     const now = new Date();
@@ -86,6 +115,7 @@ export class User {
       username: Username.create(props.username),
       email: Email.create(props.email),
       password: Password.create(props.password),
+      role: UserRole.create(props.role),
       status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
       createdAt: now,
       updatedAt: now,
@@ -99,6 +129,7 @@ export class User {
     username: string;
     email: string;
     password: string;
+    role: UserRoleEnum;
     status?: UserStatusEnum;
     createdAt: Date;
     updatedAt: Date;
@@ -109,6 +140,7 @@ export class User {
       username: Username.create(props.username),
       email: Email.create(props.email),
       password: Password.create(props.password),
+      role: UserRole.create(props.role),
       status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
@@ -122,6 +154,7 @@ export class User {
     username: string;
     email: string;
     password: string;
+    role: UserRoleEnum;
     status: UserStatusEnum;
     createdAt: Date;
     updatedAt: Date;
@@ -132,6 +165,7 @@ export class User {
       username: this.props.username.value,
       email: this.props.email.value,
       password: this.props.password.value,
+      role: this.props.role.value,
       status: this.props.status.value,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
