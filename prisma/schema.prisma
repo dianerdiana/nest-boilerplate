@@ -21,72 +21,21 @@ model User {
   username String        @db.VarChar(100)
   email    String?
   password String        @db.Text
+  role     UserRole      @default(CLIENT_ADMIN)
   status   GeneralStatus @default(ACTIVE)
 
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  userRoles UserRole[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([fullName, username])
   @@map("users")
 }
 
-model Role {
-  id              Int              @id @default(autoincrement())
-  name            String           @db.VarChar(100)
-  description     String?          @db.VarChar(255)
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
-  rolePermissions RolePermission[]
-  userRoles       UserRole[]
-
-  @@index([name])
-  @@map("roles")
-}
-
-model UserRole {
-  id     Int @id @default(autoincrement())
-  userId Int @map("user_id")
-  roleId Int @map("role_id")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
-  @@index([userId, roleId])
-  @@map("user_roles")
-}
-
-model Permission {
-  id              Int              @id @default(autoincrement())
-  name            String           @db.VarChar(100)
-  action          String           @db.VarChar(100)
-  subject         String           @db.VarChar(100)
-  conditions      String?          @db.Text
-  inverted        Boolean          @default(false)
-  reason          String?          @db.VarChar(255)
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
-  rolePermissions RolePermission[]
-
-  @@index([action, subject])
-  @@map("permissions")
-}
-
-model RolePermission {
-  id           Int      @id @default(autoincrement())
-  roleId       Int      @map("role_id")
-  permissionId Int      @map("permission_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  role       Role       @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-
-  @@unique([roleId, permissionId])
-  @@map("role_permissions")
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  CLIENT_ADMIN
+  CLIENT_STAFF
 }
 
 enum GeneralStatus {
