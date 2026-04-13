@@ -1,4 +1,4 @@
-import { Email } from '../user';
+import { Email, UserRole, UserRoleEnum } from '../user';
 import { FullName } from '../user/full-name.value-object';
 import { Password } from '../user/password.value-object';
 import { UserStatus, UserStatusEnum } from '../user/status.value-object';
@@ -328,6 +328,111 @@ describe('UserStatus', () => {
   describe('toString()', () => {
     it('should return the string representation', () => {
       expect(UserStatus.create(UserStatusEnum.SUSPEND).toString()).toBe('SUSPEND');
+    });
+  });
+});
+
+// UserRole
+describe('UserRole', () => {
+  describe('constructor / create()', () => {
+    it('should create SUPER_ADMIN role', () => {
+      expect(UserRole.create(UserRoleEnum.SUPER_ADMIN).value).toBe(UserRoleEnum.SUPER_ADMIN);
+    });
+
+    it('should create ADMIN role', () => {
+      expect(UserRole.create(UserRoleEnum.ADMIN).value).toBe(UserRoleEnum.ADMIN);
+    });
+
+    it('should create CLIENT_ADMIN role', () => {
+      expect(UserRole.create(UserRoleEnum.CLIENT_ADMIN).value).toBe(UserRoleEnum.CLIENT_ADMIN);
+    });
+
+    it('should create CLIENT_STAFF role', () => {
+      expect(UserRole.create(UserRoleEnum.CLIENT_STAFF).value).toBe(UserRoleEnum.CLIENT_STAFF);
+    });
+
+    it('should throw for an invalid role value', () => {
+      expect(() => new UserRole('UNKNOWN' as unknown as UserRoleEnum)).toThrow(
+        'INVALID user role: UNKNOWN',
+      );
+    });
+  });
+
+  describe('value getter', () => {
+    it('should return role enum value', () => {
+      expect(UserRole.create(UserRoleEnum.ADMIN).value).toBe(UserRoleEnum.ADMIN);
+    });
+  });
+
+  describe('role predicates', () => {
+    it('should identify SUPER_ADMIN correctly', () => {
+      const role = UserRole.create(UserRoleEnum.SUPER_ADMIN);
+      expect(role.isSuperAdmin()).toBe(true);
+      expect(role.isAdmin()).toBe(false);
+      expect(role.isClientAdmin()).toBe(false);
+      expect(role.isClientStaff()).toBe(false);
+    });
+
+    it('should identify ADMIN correctly', () => {
+      const role = UserRole.create(UserRoleEnum.ADMIN);
+      expect(role.isSuperAdmin()).toBe(false);
+      expect(role.isAdmin()).toBe(true);
+      expect(role.isClientAdmin()).toBe(false);
+      expect(role.isClientStaff()).toBe(false);
+    });
+
+    it('should identify CLIENT_ADMIN correctly', () => {
+      const role = UserRole.create(UserRoleEnum.CLIENT_ADMIN);
+      expect(role.isSuperAdmin()).toBe(false);
+      expect(role.isAdmin()).toBe(false);
+      expect(role.isClientAdmin()).toBe(true);
+      expect(role.isClientStaff()).toBe(false);
+    });
+
+    it('should identify CLIENT_STAFF correctly', () => {
+      const role = UserRole.create(UserRoleEnum.CLIENT_STAFF);
+      expect(role.isSuperAdmin()).toBe(false);
+      expect(role.isAdmin()).toBe(false);
+      expect(role.isClientAdmin()).toBe(false);
+      expect(role.isClientStaff()).toBe(true);
+    });
+  });
+
+  describe('equals()', () => {
+    it('should return true for same role value', () => {
+      expect(UserRole.create(UserRoleEnum.ADMIN).equals(UserRole.create(UserRoleEnum.ADMIN))).toBe(
+        true,
+      );
+    });
+
+    it('should return false for different role values', () => {
+      expect(
+        UserRole.create(UserRoleEnum.ADMIN).equals(UserRole.create(UserRoleEnum.CLIENT_ADMIN)),
+      ).toBe(false);
+    });
+  });
+
+  describe('toString()', () => {
+    it('should return role string representation', () => {
+      expect(UserRole.create(UserRoleEnum.CLIENT_STAFF).toString()).toBe('CLIENT_STAFF');
+    });
+  });
+
+  describe('static factories', () => {
+    it('createSuperAdmin() should create SUPER_ADMIN role', () => {
+      expect(UserRole.createSuperAdmin().value).toBe(UserRoleEnum.SUPER_ADMIN);
+    });
+
+    it('createAdmin() should create ADMIN role', () => {
+      expect(UserRole.createAdmin().value).toBe(UserRoleEnum.ADMIN);
+    });
+
+    it('createClientAdmin() should create CLIENT_ADMIN role', () => {
+      expect(UserRole.createClientAdmin().value).toBe(UserRoleEnum.CLIENT_ADMIN);
+    });
+
+    it('createClientStaff() should create CLIENT_STAFF role', () => {
+      expect(UserRole.createClientStaff().value).toBe(UserRoleEnum.CLIENT_STAFF);
     });
   });
 });
