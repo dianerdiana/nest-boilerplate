@@ -1,4 +1,11 @@
-import { FullName, UserStatus, UserStatusEnum, Username } from '../../value-objects';
+import {
+  FullName,
+  Username,
+  UserRole,
+  UserRoleEnum,
+  UserStatus,
+  UserStatusEnum,
+} from '../../value-objects';
 import { User } from '../user.entity';
 
 const baseCreateProps = {
@@ -6,6 +13,7 @@ const baseCreateProps = {
   username: 'johndoe',
   email: 'john@example.com',
   password: 'secret123',
+  role: UserRoleEnum.ADMIN,
 };
 
 const baseReconstituteProps = {
@@ -24,6 +32,7 @@ describe('User entity', () => {
       expect(user.fullName).toBe('John Doe');
       expect(user.username).toBe('johndoe');
       expect(user.password).toBe('secret123');
+      expect(user.isAdmin()).toBe(true);
     });
 
     it('should default status to ACTIVE when not provided', () => {
@@ -60,6 +69,7 @@ describe('User entity', () => {
       expect(user.fullName).toBe('John Doe');
       expect(user.username).toBe('johndoe');
       expect(user.password).toBe('secret123');
+      expect(user.isAdmin()).toBe(true);
       expect(user.createdAt).toEqual(new Date('2026-01-01'));
       expect(user.updatedAt).toEqual(new Date('2026-01-02'));
     });
@@ -154,6 +164,41 @@ describe('User entity', () => {
     });
   });
 
+  describe('updateRole()', () => {
+    it('should update role and updatedAt', () => {
+      const user = User.reconstitute(baseReconstituteProps);
+      const newRole = UserRole.create(UserRoleEnum.CLIENT_STAFF);
+
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-06-01'));
+
+      user.updateRole(newRole);
+
+      expect(user.isClientStaff()).toBe(true);
+      expect(user.isAdmin()).toBe(false);
+      expect(user.updatedAt).toEqual(new Date('2026-06-01'));
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('role helpers', () => {
+    it('canManageUser() should return true only for super admin', () => {
+      const superAdmin = User.reconstitute({
+        ...baseReconstituteProps,
+        role: UserRoleEnum.SUPER_ADMIN,
+      });
+      const admin = User.reconstitute({
+        ...baseReconstituteProps,
+        id: 2,
+        role: UserRoleEnum.ADMIN,
+      });
+
+      expect(superAdmin.canManageUser()).toBe(true);
+      expect(admin.canManageUser()).toBe(false);
+    });
+  });
+
   describe('equals()', () => {
     it('should return true for two users with the same id', () => {
       const userA = User.reconstitute(baseReconstituteProps);
@@ -201,6 +246,7 @@ describe('User entity', () => {
       expect(result.username).toBe('johndoe');
       expect(result.email).toBe('john@example.com');
       expect(result.password).toBe('secret123');
+      expect(result.role).toBe(UserRoleEnum.ADMIN);
       expect(result.status).toBe(UserStatusEnum.ACTIVE);
     });
 
@@ -213,6 +259,7 @@ describe('User entity', () => {
       expect(result.username).toBe('johndoe');
       expect(result.email).toBe('john@example.com');
       expect(result.password).toBe('secret123');
+      expect(result.role).toBe(UserRoleEnum.ADMIN);
       expect(result.status).toBe(UserStatusEnum.ACTIVE);
       expect(result.createdAt).toEqual(new Date('2026-01-01'));
       expect(result.updatedAt).toEqual(new Date('2026-01-02'));
