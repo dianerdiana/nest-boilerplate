@@ -1,8 +1,9 @@
-import { UserFullName } from '../user/user-full-name.value-object';
+import { Email } from '../user';
+import { FullName } from '../user/full-name.value-object';
+import { Password } from '../user/password.value-object';
+import { UserStatus, UserStatusEnum } from '../user/status.value-object';
 import { UserId } from '../user/user-id.value-object';
-import { UserPassword } from '../user/user-password.value-object';
-import { UserStatus, UserStatusEnum } from '../user/user-status.value-object';
-import { UserUsername } from '../user/user-username.value-object';
+import { Username } from '../user/username.value-object';
 
 // UserId
 describe('UserId', () => {
@@ -54,171 +55,227 @@ describe('UserId', () => {
   });
 });
 
-// UserFullName
-describe('UserFullName', () => {
+// FullName
+describe('FullName', () => {
   describe('create()', () => {
     it('should create a valid full name', () => {
-      expect(UserFullName.create('John Doe').value).toBe('John Doe');
+      expect(FullName.create('John Doe').value).toBe('John Doe');
     });
 
     it('should trim whitespace', () => {
-      expect(UserFullName.create('  Alice  ').value).toBe('Alice');
+      expect(FullName.create('  Alice  ').value).toBe('Alice');
     });
 
     it('should throw when name is empty', () => {
-      expect(() => UserFullName.create('')).toThrow('firstname cannot be empty');
+      expect(() => FullName.create('')).toThrow('firstname cannot be empty');
     });
 
     it('should throw when name is only whitespace', () => {
-      expect(() => UserFullName.create('   ')).toThrow('firstname cannot be empty');
+      expect(() => FullName.create('   ')).toThrow('firstname cannot be empty');
     });
 
     it('should throw when name is shorter than 2 characters', () => {
-      expect(() => UserFullName.create('A')).toThrow(
-        'firstname must be at least 2 characters long',
-      );
+      expect(() => FullName.create('A')).toThrow('firstname must be at least 2 characters long');
     });
 
     it('should throw when name exceeds 100 characters', () => {
-      expect(() => UserFullName.create('A'.repeat(101))).toThrow(
+      expect(() => FullName.create('A'.repeat(101))).toThrow(
         'firstname cannot exceed 100 characters',
       );
     });
 
     it('should throw when name contains invalid characters', () => {
-      expect(() => UserFullName.create('John123')).toThrow('firstname contains invalid characters');
+      expect(() => FullName.create('John123')).toThrow('firstname contains invalid characters');
     });
 
     it('should allow hyphens and apostrophes', () => {
-      expect(UserFullName.create("O'Brien-Smith").value).toBe("O'Brien-Smith");
+      expect(FullName.create("O'Brien-Smith").value).toBe("O'Brien-Smith");
     });
   });
 
   describe('value getter', () => {
     it('should return the string value', () => {
-      expect(UserFullName.create('Jane').value).toBe('Jane');
+      expect(FullName.create('Jane').value).toBe('Jane');
     });
   });
 
   describe('equals()', () => {
     it('should return true for same value', () => {
-      expect(UserFullName.create('Alice').equals(UserFullName.create('Alice'))).toBe(true);
+      expect(FullName.create('Alice').equals(FullName.create('Alice'))).toBe(true);
     });
 
     it('should return false for different values', () => {
-      expect(UserFullName.create('Alice').equals(UserFullName.create('Bob'))).toBe(false);
+      expect(FullName.create('Alice').equals(FullName.create('Bob'))).toBe(false);
     });
   });
 
   describe('toString()', () => {
     it('should return the string representation', () => {
-      expect(UserFullName.create('Alice').toString()).toBe('Alice');
+      expect(FullName.create('Alice').toString()).toBe('Alice');
     });
   });
 });
 
-// UserUsername
-describe('UserUsername', () => {
+// Username
+describe('Username', () => {
   describe('create()', () => {
     it('should create a valid username', () => {
-      expect(UserUsername.create('johndoe').value).toBe('johndoe');
+      expect(Username.create('johndoe').value).toBe('johndoe');
     });
 
     it('should trim whitespace', () => {
-      expect(UserUsername.create('  john  ').value).toBe('john');
+      expect(Username.create('  john  ').value).toBe('john');
     });
 
     it('should throw when username is empty', () => {
-      expect(() => UserUsername.create('')).toThrow('username cannot be empty');
+      expect(() => Username.create('')).toThrow('username cannot be empty');
     });
 
     it('should throw when username is only whitespace', () => {
-      expect(() => UserUsername.create('   ')).toThrow('username cannot be empty');
+      expect(() => Username.create('   ')).toThrow('username cannot be empty');
     });
 
     it('should throw when username is shorter than 2 characters (after trim)', () => {
-      expect(() => UserUsername.create('a')).toThrow('username must be at least 3 characters');
+      expect(() => Username.create('a')).toThrow('username must be at least 3 characters');
     });
 
     it('should throw when username exceeds 50 characters', () => {
-      expect(() => UserUsername.create('a'.repeat(51))).toThrow(
-        'username cannot exceed 50 characters',
-      );
+      expect(() => Username.create('a'.repeat(51))).toThrow('username cannot exceed 50 characters');
     });
 
     it('should throw when username contains spaces', () => {
-      expect(() => UserUsername.create('john doe')).toThrow('username contains invalid characters');
+      expect(() => Username.create('john doe')).toThrow('username contains invalid characters');
     });
 
     it('should throw when username contains special characters', () => {
-      expect(() => UserUsername.create('john@doe')).toThrow('username contains invalid characters');
+      expect(() => Username.create('john@doe')).toThrow('username contains invalid characters');
     });
 
     it('should allow underscores and numbers', () => {
-      expect(UserUsername.create('john_doe_42').value).toBe('john_doe_42');
+      expect(Username.create('john_doe_42').value).toBe('john_doe_42');
     });
   });
 
   describe('equals()', () => {
     it('should return true for same value', () => {
-      expect(UserUsername.create('alice').equals(UserUsername.create('alice'))).toBe(true);
+      expect(Username.create('alice').equals(Username.create('alice'))).toBe(true);
     });
 
     it('should return false for different values', () => {
-      expect(UserUsername.create('alice').equals(UserUsername.create('bob'))).toBe(false);
+      expect(Username.create('alice').equals(Username.create('bob'))).toBe(false);
     });
   });
 
   describe('toString()', () => {
     it('should return the string representation', () => {
-      expect(UserUsername.create('alice').toString()).toBe('alice');
+      expect(Username.create('alice').toString()).toBe('alice');
     });
   });
 });
 
-// UserPassword
-describe('UserPassword', () => {
+// Username
+describe('Email', () => {
+  describe('create()', () => {
+    it('should create a valid email', () => {
+      expect(Email.create('user@example.com').value).toBe('user@example.com');
+    });
+
+    it('should throw when email is empty string', () => {
+      expect(() => Email.create('')).toThrow('email cannot be empty');
+    });
+
+    it('should throw when email is only whitespace', () => {
+      expect(() => Email.create('   ')).toThrow('email cannot be empty');
+    });
+
+    it('should throw when email format is invalid — missing @', () => {
+      expect(() => Email.create('userexample.com')).toThrow('invalid email format');
+    });
+
+    it('should throw when email format is invalid — missing domain', () => {
+      expect(() => Email.create('user@')).toThrow('invalid email format');
+    });
+
+    it('should throw when email format is invalid — missing TLD', () => {
+      expect(() => Email.create('user@example')).toThrow('invalid email format');
+    });
+
+    it('should throw when email exceeds 254 characters', () => {
+      const longLocal = 'a'.repeat(244);
+      expect(() => Email.create(`${longLocal}@example.com`)).toThrow('email is too long');
+    });
+
+    it('should accept email of exactly 254 characters', () => {
+      const paddedDomain = 'b'.repeat(2);
+      const exact254 = `${'a'.repeat(244)}@${paddedDomain}.co`; // 244+1+2+1+2 = 250, still fine
+      expect(() => Email.create(exact254)).not.toThrow();
+    });
+  });
+
+  describe('value getter', () => {
+    it('should return the original email string', () => {
+      expect(Email.create('hello@world.org').value).toBe('hello@world.org');
+    });
+  });
+
+  describe('equals()', () => {
+    it('should return true for the same email (case-insensitive)', () => {
+      expect(Email.create('User@Example.COM').equals(Email.create('user@example.com'))).toBe(true);
+    });
+
+    it('should return false for different emails', () => {
+      expect(Email.create('alice@example.com').equals(Email.create('bob@example.com'))).toBe(false);
+    });
+  });
+
+  describe('toString()', () => {
+    it('should return the email string', () => {
+      expect(Email.create('test@test.io').toString()).toBe('test@test.io');
+    });
+  });
+});
+
+// Password
+describe('Password', () => {
   describe('create()', () => {
     it('should create a valid password', () => {
-      expect(UserPassword.create('secret123').value).toBe('secret123');
+      expect(Password.create('secret123').value).toBe('secret123');
     });
 
     it('should trim whitespace', () => {
-      expect(UserPassword.create('  secret123  ').value).toBe('secret123');
+      expect(Password.create('  secret123  ').value).toBe('secret123');
     });
 
     it('should throw when password is empty', () => {
-      expect(() => UserPassword.create('')).toThrow('password cannot be empty');
+      expect(() => Password.create('')).toThrow('password cannot be empty');
     });
 
     it('should throw when password is only whitespace', () => {
-      expect(() => UserPassword.create('   ')).toThrow('password cannot be empty');
+      expect(() => Password.create('   ')).toThrow('password cannot be empty');
     });
 
     it('should throw when password is shorter than 6 characters', () => {
-      expect(() => UserPassword.create('abc')).toThrow(
-        'password must be at least 2 characters long',
-      );
+      expect(() => Password.create('abc')).toThrow('password must be at least 2 characters long');
     });
 
     it('should accept password of exactly 6 characters', () => {
-      expect(UserPassword.create('abcdef').value).toBe('abcdef');
+      expect(Password.create('abcdef').value).toBe('abcdef');
     });
   });
 
   describe('equals()', () => {
     it('should return true for same value', () => {
-      expect(UserPassword.create('secret123').equals(UserPassword.create('secret123'))).toBe(true);
+      expect(Password.create('secret123').equals(Password.create('secret123'))).toBe(true);
     });
 
     it('should return false for different values', () => {
-      expect(UserPassword.create('secret123').equals(UserPassword.create('other456'))).toBe(false);
+      expect(Password.create('secret123').equals(Password.create('other456'))).toBe(false);
     });
   });
 
   describe('toString()', () => {
     it('should return the string value', () => {
-      expect(UserPassword.create('mypass1').toString()).toBe('mypass1');
+      expect(Password.create('mypass1').toString()).toBe('mypass1');
     });
   });
 });
