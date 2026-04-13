@@ -1,19 +1,19 @@
 import {
   Email,
-  UserFullName,
+  FullName,
+  Password,
   UserId,
-  UserPassword,
+  Username,
   UserStatus,
   UserStatusEnum,
-  UserUsername,
 } from '../value-objects';
 
 export interface UserProps {
   id?: UserId;
-  fullName: UserFullName;
-  username: UserUsername;
+  fullName: FullName;
+  username: Username;
   email: Email;
-  password: UserPassword;
+  password: Password;
   status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -50,12 +50,12 @@ export class User {
     return this.props.updatedAt;
   }
 
-  updateFullName(value: UserFullName): void {
+  updateFullName(value: FullName): void {
     this.props.fullName = value;
     this.props.updatedAt = new Date();
   }
 
-  updateUsername(value: UserUsername): void {
+  updateUsername(value: Username): void {
     this.props.username = value;
     this.props.updatedAt = new Date();
   }
@@ -82,10 +82,10 @@ export class User {
     const now = new Date();
 
     return new User({
-      fullName: UserFullName.create(props.fullName),
-      username: UserUsername.create(props.username),
+      fullName: FullName.create(props.fullName),
+      username: Username.create(props.username),
       email: Email.create(props.email),
-      password: UserPassword.create(props.password),
+      password: Password.create(props.password),
       status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
       createdAt: now,
       updatedAt: now,
@@ -105,10 +105,10 @@ export class User {
   }): User {
     return new User({
       id: UserId.from(props.id),
-      fullName: UserFullName.create(props.fullName),
-      username: UserUsername.create(props.username),
+      fullName: FullName.create(props.fullName),
+      username: Username.create(props.username),
       email: Email.create(props.email),
-      password: UserPassword.create(props.password),
+      password: Password.create(props.password),
       status: UserStatus.create(props.status || UserStatusEnum.ACTIVE),
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,

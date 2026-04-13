@@ -1,4 +1,4 @@
-import { UserFullName, UserStatus, UserStatusEnum, UserUsername } from '../../value-objects';
+import { FullName, UserStatus, UserStatusEnum, Username } from '../../value-objects';
 import { User } from '../user.entity';
 
 const baseCreateProps = {
@@ -104,7 +104,7 @@ describe('User entity', () => {
     it('should update fullName and updatedAt', () => {
       const user = User.reconstitute(baseReconstituteProps);
       const originalUpdatedAt = user.updatedAt;
-      const newFullName = UserFullName.create('Jane Doe');
+      const newFullName = FullName.create('Jane Doe');
 
       // Ensure time difference is detectable
       jest.useFakeTimers();
@@ -123,7 +123,7 @@ describe('User entity', () => {
   describe('updateUsername()', () => {
     it('should update username and updatedAt', () => {
       const user = User.reconstitute(baseReconstituteProps);
-      const newUsername = UserUsername.create('janedoe');
+      const newUsername = Username.create('janedoe');
 
       jest.useFakeTimers();
       jest.setSystemTime(new Date('2026-06-01'));
