@@ -64,6 +64,6 @@ export class UserRole {
   }
 
   static createClientStaff(): UserRole {
-    return new UserRole(UserRoleEnum.CLIENT_ADMIN);
+    return new UserRole(UserRoleEnum.CLIENT_STAFF);
   }
 }
