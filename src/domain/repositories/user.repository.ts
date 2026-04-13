@@ -16,7 +16,7 @@ export interface PaginatedResult<T> {
   };
 }
 
-export interface UserRepositoryInterface {
+export interface UserRepository {
   save(user: User): Promise<User>;
   findById(id: UserId): Promise<User | null>;
   findByEmail(email: Email): Promise<User | null>;
